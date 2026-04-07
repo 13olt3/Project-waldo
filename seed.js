@@ -13,19 +13,19 @@ async function main() {
             name: "dead",
             locationX: 1200,
             locationY: 1900,
-            radius: 100,
+            radius: 150,
           },
           {
             name: "black",
             locationX: 200,
             locationY: 400,
-            radius: 100,
+            radius: 150,
           },
           {
             name: "white",
             locationX: 850,
             locationY: 2975,
-            radius: 100,
+            radius: 150,
           },
         ],
       },
@@ -42,3 +42,5 @@ main()
     await prisma.$disconnect();
     process.exit(1);
   });
+
+// node --env-file=.env seed.js
