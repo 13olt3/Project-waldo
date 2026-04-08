@@ -3,6 +3,7 @@ const prisma = require("./lib/prisma.js");
 async function main() {
   await prisma.character.deleteMany({});
   await prisma.image.deleteMany({});
+  await prisma.gameSession.deleteMany({});
   const image = await prisma.image.create({
     data: {
       imagename: "amongus",

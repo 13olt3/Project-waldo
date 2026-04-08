@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "Score" ALTER COLUMN "timeInSeconds" SET DATA TYPE DOUBLE PRECISION;

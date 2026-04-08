@@ -12,28 +12,20 @@ datasource db {
   provider = "postgresql"
 }
 
-model User {
-  id          Int       @id @default(autoincrement())
-  username    String    @unique
-  password    String
-  email       String  
-  scores      Score[]
 
-}
 
 model Score {
-  id            Int       @id @default(autoincrement())
-  user          User?     @relation(fields: [userId], references:[id], onDelete: Cascade) 
-  userId        Int?
+  id            Int       @id @default(autoincrement())  
   image         Image     @relation(fields: [imageId], references:[id])
   imageId       Int
-  timeInSeconds Int
+  timeInSeconds Float
+  playername    String
 
 }
 
 model Image {
   id          Int       @id @default(autoincrement())
-  imagename   String
+  imagename   String    @unique
   imgUrl      String
   scores      Score[]
   characters  Character[]
@@ -47,4 +39,11 @@ model Character {
   image       Image     @relation(fields:[imageId], references:[id])
   imageId     Int
   radius      Int
+}
+
+model GameSession {
+  id        String   @id @default(uuid())
+  startTime DateTime @default(now())
+  endTime   DateTime?
+  score     Float?
 }

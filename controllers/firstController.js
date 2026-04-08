@@ -9,29 +9,7 @@ const validateAnswer = [
   body("dead.x").isFloat(),
   body("dead.y").isFloat(),
 ];
-// function answerChecker(userAnswer, solution) {
-//   let finalAnswer = true;
-//   let answerArray = {};
 
-//   Object.entries(userAnswer).forEach((answer) => {
-//     for (let i = 0; i < solution.length; i++) {
-//       if (answer[0] === solution[i].name) {
-//         if (
-//           Math.abs(answer[1].x - solution[i].locationX) > solution[i].radius
-//         ) {
-//           finalAnswer = false;
-
-//         } else if (
-//           Math.abs(answer[1].y - solution[i].locationY) > solution[i].radius
-//         ) {
-//           finalAnswer = false;
-//         } else {
-//         }
-//       }
-//     }
-//   });
-//   return finalAnswer;
-// }
 function answerChecker(userAnswer, solution) {
   const results = {};
 
@@ -58,7 +36,7 @@ function answerChecker(userAnswer, solution) {
   return results;
 }
 
-const answerController = {
+const firstController = {
   checkAnswer: [
     validateAnswer,
     async (req, res) => {
@@ -71,10 +49,58 @@ const answerController = {
     },
   ],
 
-  createAnswer: [],
+  startTimer: [
+    async (req, res) => {
+      const session = await prisma.gameSession.create({
+        data: {},
+      });
+      res.json({ sessionId: session.id });
+    },
+  ],
+  endTimer: [
+    async (req, res) => {
+      const gameId = req.body.session;
+      const username = req.body.username;
+      const imgName = req.body.imgName;
+
+      const data = await prisma.gameSession.findUnique({
+        where: { id: gameId },
+      });
+      const endTime = new Date();
+      const gameTimeMs = endTime - data.startTime;
+      const gameTimeS = gameTimeMs / 1000;
+      const updatedData = await prisma.gameSession.update({
+        where: { id: gameId },
+        data: { endTime: endTime, score: gameTimeS },
+      });
+
+      await prisma.score.create({
+        data: {
+          timeInSeconds: gameTimeS,
+          playername: username,
+          image: {
+            connect: {
+              imagename: imgName,
+            },
+          },
+        },
+      });
+
+      res.json(updatedData);
+    },
+  ],
+  showScoreboard: [
+    async (req, res) => {
+      const scoreboardData = await prisma.score.findMany({
+        orderBy: { timeInSeconds: "asc" },
+        take: 10,
+      });
+      res.json(scoreboardData);
+    },
+  ],
 };
 
-module.exports = answerController;
+module.exports = firstController;
 
 // console.log(userAnswer);
 // console.log(solution);

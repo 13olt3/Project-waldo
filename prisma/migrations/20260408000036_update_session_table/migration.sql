@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "GameSession" ALTER COLUMN "score" SET DATA TYPE DOUBLE PRECISION;
